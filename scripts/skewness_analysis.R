@@ -41,7 +41,8 @@ SHORT_SKEW <- c("LC3B_skewness", "P62_skewness")
 
 find_skewness_file <- function(roi_dir) {
   if (!dir.exists(roi_dir)) return(NULL)
-  files <- list.files(roi_dir, pattern = "Skewness", full.names = TRUE,
+  # "Stewness" is a known typo in some MACS iQ View exports (missing "k")
+  files <- list.files(roi_dir, pattern = "Sk?ewness", full.names = TRUE,
                       ignore.case = TRUE)
   if (length(files) == 0) return(NULL)
   for (f in files) {
