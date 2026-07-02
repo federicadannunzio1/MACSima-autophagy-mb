@@ -312,19 +312,59 @@ write.csv(patient_medians, file.path(OUT_DATA, "skewness_patient_medians.csv"),
 message("Salvato: skewness_patient_medians.csv")
 
 # --------------------------------------------------------------------------
-# PLOT 5 — Proportion of punctate cells per patient (LC3B skewness > 0)
-#           with bootstrap 95% confidence intervals
+# PLOT 5 — Distribution of LC3B skewness values (density per patient)
 #
-# Rationale: skewness > 0 = asymmetric (punctate) intracellular distribution,
-# consistent with autophagosome formation. The proportion is cell-number
-# independent (unlike raw counts) and integrates the full distribution.
-# Bootstrap CI accounts for the fact that patients differ in cell number:
-# a CI from 500 cells is wider than one from 50,000 cells.
+# Before choosing a threshold, visualize the full distribution to understand
+# where values concentrate and whether a biologically meaningful cutoff exists.
 # --------------------------------------------------------------------------
 
-message("\nCalcolo proporzione cellule puntate (LC3B skewness > 0) + bootstrap CI...")
+message("\nPlot distribuzione completa LC3B skewness per paziente...")
 
-N_BOOT <- 1000
+set.seed(SEED)
+MAX_DENS <- 200000
+df_dens <- if (nrow(df_all) > MAX_DENS) {
+  df_all[sample(seq_len(nrow(df_all)), MAX_DENS), ]
+} else df_all
+
+p_dens <- ggplot(df_dens, aes(x = LC3B_skewness, fill = group)) +
+  geom_density(alpha = 0.5) +
+  geom_vline(xintercept = c(0, 0.5, 1), linetype = "dashed",
+             colour = c("grey40", "steelblue", "firebrick"),
+             linewidth = 0.5) +
+  annotate("text", x = c(0.02, 0.52, 1.02), y = Inf,
+           label = c(">0", ">0.5", ">1"),
+           hjust = 0, vjust = 1.5, size = 3,
+           colour = c("grey40", "steelblue", "firebrick")) +
+  facet_wrap(~patient_id, scales = "free_y", ncol = 4) +
+  scale_fill_manual(values = PALETTE_GROUP) +
+  scale_x_continuous(limits = c(-2, 5)) +
+  labs(
+    title    = "LC3B cytoplasm skewness distribution per patient",
+    subtitle = "Dashed lines: candidate thresholds (>0, >0.5, >1) for 'punctate' classification",
+    x = "LC3B cytoplasm skewness", y = "Density", fill = "Group"
+  ) +
+  theme_bw(base_size = 10) +
+  theme(legend.position = "top",
+        strip.background = element_rect(fill = "grey90"))
+
+ggsave(file.path(OUT_PLOTS, "Skewness_05_LC3B_distribution_per_patient.pdf"),
+       p_dens, width = 14, height = 10)
+message("Salvato: Skewness_05_LC3B_distribution_per_patient.pdf")
+
+# --------------------------------------------------------------------------
+# PLOT 6 — Proportion of punctate cells at three thresholds (> 0, > 0.5, > 1)
+#           with bootstrap 95% CI
+#
+# Rationale: skewness > 0 is a very lenient threshold (nearly any asymmetric
+# distribution qualifies). Thresholds > 0.5 and > 1 identify cells with
+# stronger punctate LC3B patterns more consistent with active autophagosome
+# formation. Comparing all three reveals whether results are threshold-dependent.
+# --------------------------------------------------------------------------
+
+message("\nCalcolo proporzione cellule puntate a soglie multiple + bootstrap CI...")
+
+THRESHOLDS <- c(0, 0.5, 1)
+N_BOOT     <- 1000
 set.seed(SEED)
 
 punctate_stats <- lapply(levels(df_all$patient_id), function(pid) {
@@ -333,35 +373,55 @@ punctate_stats <- lapply(levels(df_all$patient_id), function(pid) {
   n     <- length(cells)
   if (n == 0) return(NULL)
 
-  obs_prop <- mean(cells > 0)
-
-  # Bootstrap: resample cells with replacement, compute proportion each time
-  boot_props <- replicate(N_BOOT, mean(sample(cells, n, replace = TRUE) > 0))
-
-  data.frame(
-    patient_id = pid,
-    group      = unique(df_all$group[df_all$patient_id == pid]),
-    n_cells    = n,
-    prop_punctate     = obs_prop,
-    ci_lower          = quantile(boot_props, 0.025),
-    ci_upper          = quantile(boot_props, 0.975),
-    stringsAsFactors  = FALSE
-  )
+  rows <- lapply(THRESHOLDS, function(thr) {
+    obs_prop   <- mean(cells > thr)
+    boot_props <- replicate(N_BOOT,
+                            mean(sample(cells, n, replace = TRUE) > thr))
+    data.frame(
+      patient_id    = pid,
+      group         = unique(df_all$group[df_all$patient_id == pid]),
+      n_cells       = n,
+      threshold     = thr,
+      threshold_lab = paste0("skewness > ", thr),
+      prop_punctate = obs_prop,
+      ci_lower      = quantile(boot_props, 0.025),
+      ci_upper      = quantile(boot_props, 0.975),
+      stringsAsFactors = FALSE
+    )
+  })
+  do.call(rbind, rows)
 })
 
 punctate_df <- do.call(rbind, punctate_stats)
-punctate_df$patient_id <- factor(punctate_df$patient_id,
-                                  levels = levels(df_all$patient_id))
+punctate_df$patient_id    <- factor(punctate_df$patient_id,
+                                     levels = levels(df_all$patient_id))
+punctate_df$threshold_lab <- factor(punctate_df$threshold_lab,
+  levels = paste0("skewness > ", THRESHOLDS))
 
-message("\nProporzione cellule puntate LC3B per paziente:")
-print(as.data.frame(punctate_df[, c("patient_id", "group", "n_cells",
-                                     "prop_punctate", "ci_lower", "ci_upper")]))
+# Print summary per threshold
+for (thr in THRESHOLDS) {
+  sub <- punctate_df[punctate_df$threshold == thr, ]
+  message(sprintf("\n--- Soglia LC3B skewness > %.1f ---", thr))
+  print(as.data.frame(sub[, c("patient_id", "group", "n_cells",
+                               "prop_punctate", "ci_lower", "ci_upper")]))
+
+  g3_p  <- sub$prop_punctate[sub$group == "G3"]
+  shh_p <- sub$prop_punctate[sub$group == "SHH"]
+  message(sprintf("  G3:  mean=%.3f  sd=%.3f", mean(g3_p), sd(g3_p)))
+  message(sprintf("  SHH: mean=%.3f  sd=%.3f", mean(shh_p), sd(shh_p)))
+
+  if (length(g3_p) >= 2 && length(shh_p) >= 2) {
+    wt <- wilcox.test(g3_p, shh_p, exact = FALSE)
+    message(sprintf("  Wilcoxon W=%.1f  p=%.4f  (exploratory, n=%d vs %d)",
+                    wt$statistic, wt$p.value, length(g3_p), length(shh_p)))
+  }
+}
 
 write.csv(punctate_df, file.path(OUT_DATA, "skewness_punctate_proportion.csv"),
           row.names = FALSE, quote = FALSE)
-message("Salvato: skewness_punctate_proportion.csv")
+message("\nSalvato: skewness_punctate_proportion.csv")
 
-# Patient shapes (consistent with other plots)
+# Patient shapes
 patient_shapes <- c(15, 16, 17, 18, 4, 8, 9, 10, 11, 12)
 shape_map <- setNames(patient_shapes[seq_along(levels(punctate_df$patient_id))],
                       levels(punctate_df$patient_id))
@@ -369,14 +429,15 @@ shape_map <- setNames(patient_shapes[seq_along(levels(punctate_df$patient_id))],
 p_punctate <- ggplot(punctate_df,
     aes(x = group, y = prop_punctate, colour = group, shape = patient_id)) +
   geom_errorbar(aes(ymin = ci_lower, ymax = ci_upper),
-                width = 0.08, linewidth = 0.5, alpha = 0.6,
+                width = 0.08, linewidth = 0.5, alpha = 0.5,
                 position = position_jitter(width = 0.08, seed = SEED)) +
-  geom_point(size = 4,
+  geom_point(size = 3.5,
              position = position_jitter(width = 0.08, seed = SEED)) +
   stat_summary(fun = mean, geom = "crossbar",
                width = 0.3, colour = "black", linewidth = 0.6,
                inherit.aes = FALSE,
                aes(x = group, y = prop_punctate)) +
+  facet_wrap(~threshold_lab, nrow = 1) +
   scale_colour_manual(values = PALETTE_GROUP) +
   scale_shape_manual(values = shape_map) +
   scale_y_continuous(labels = scales::percent_format(accuracy = 1),
@@ -384,64 +445,34 @@ p_punctate <- ggplot(punctate_df,
   geom_hline(yintercept = 0.5, linetype = "dashed",
              colour = "grey50", linewidth = 0.4) +
   labs(
-    title    = "Proportion of cells with punctate LC3B distribution",
-    subtitle = sprintf(
-      "Punctate = LC3B cytoplasm skewness > 0 | Points = patients | Error bars = 95%% bootstrap CI (n=%d)", N_BOOT),
-    x = "Group", y = "Proportion punctate cells (%)",
+    title    = "Proportion of cells with punctate LC3B — sensitivity to threshold",
+    subtitle = sprintf("Points = patients | Error bars = 95%% bootstrap CI (n=%d) | Bar = group mean", N_BOOT),
+    x = "Group", y = "Proportion punctate cells",
     colour = "Group", shape = "Patient"
   ) +
   theme_bw(base_size = 12) +
-  theme(legend.position = "right")
+  theme(legend.position    = "right",
+        strip.background   = element_rect(fill = "grey90"),
+        strip.text         = element_text(face = "bold"))
 
-ggsave(file.path(OUT_PLOTS, "Skewness_05_punctate_proportion_LC3B.pdf"),
-       p_punctate, width = 8, height = 6)
-message("Salvato: Skewness_05_punctate_proportion_LC3B.pdf")
-
-# --------------------------------------------------------------------------
-# Group-level summary and Wilcoxon test (exploratory — small n, descriptive)
-# --------------------------------------------------------------------------
-
-group_summary <- punctate_df %>%
-  group_by(group) %>%
-  summarise(
-    n_patients        = n(),
-    mean_prop         = mean(prop_punctate),
-    median_prop       = median(prop_punctate),
-    sd_prop           = sd(prop_punctate),
-    .groups = "drop"
-  )
-
-message("\nProporzione cellule puntate LC3B per gruppo:")
-print(as.data.frame(group_summary))
-
-# Wilcoxon rank-sum test (non-parametric, no normality assumption)
-# NOTE: n=4-5 per group — insufficient power for inferential conclusions.
-# Result is exploratory only.
-g3_props  <- punctate_df$prop_punctate[punctate_df$group == "G3"]
-shh_props <- punctate_df$prop_punctate[punctate_df$group == "SHH"]
-
-if (length(g3_props) >= 2 && length(shh_props) >= 2) {
-  wtest <- wilcox.test(g3_props, shh_props, exact = FALSE)
-  message(sprintf(
-    "\nWilcoxon rank-sum test G3 vs SHH (LC3B punctate proportion):\n  W = %.1f, p = %.4f",
-    wtest$statistic, wtest$p.value))
-  message("  NOTE: exploratory only — n=", length(g3_props), " vs ", length(shh_props),
-          " patients, insufficient power for inferential conclusions.")
-}
+ggsave(file.path(OUT_PLOTS, "Skewness_06_punctate_proportion_thresholds.pdf"),
+       p_punctate, width = 14, height = 6)
+message("Salvato: Skewness_06_punctate_proportion_thresholds.pdf")
 
 # --------------------------------------------------------------------------
-# Also add proportion to patient_medians CSV for completeness
+# Add threshold=0 proportion to patient_medians CSV for completeness
 # --------------------------------------------------------------------------
 
-patient_medians <- merge(patient_medians,
-  punctate_df[, c("patient_id", "prop_punctate", "ci_lower", "ci_upper",
-                  "n_cells")],
-  by = "patient_id", all.x = TRUE)
+prop0_df <- punctate_df[punctate_df$threshold == 0,
+                         c("patient_id", "prop_punctate", "ci_lower",
+                           "ci_upper", "n_cells")]
 
-# Overwrite with enriched version
+patient_medians <- merge(patient_medians, prop0_df,
+                         by = "patient_id", all.x = TRUE)
+
 write.csv(patient_medians, file.path(OUT_DATA, "skewness_patient_medians.csv"),
           row.names = FALSE, quote = FALSE)
-message("Aggiornato: skewness_patient_medians.csv (aggiunta colonna prop_punctate)")
+message("Aggiornato: skewness_patient_medians.csv")
 
 message("\n=== SKEWNESS ANALYSIS completata ===")
 message(sprintf("Plot in: %s", OUT_PLOTS))
