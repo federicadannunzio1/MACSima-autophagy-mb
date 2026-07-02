@@ -328,13 +328,12 @@ df_dens <- if (nrow(df_all) > MAX_DENS) {
 
 p_dens <- ggplot(df_dens, aes(x = LC3B_skewness, fill = group)) +
   geom_density(alpha = 0.5) +
-  geom_vline(xintercept = c(0, 0.5, 1), linetype = "dashed",
-             colour = c("grey40", "steelblue", "firebrick"),
-             linewidth = 0.5) +
-  annotate("text", x = c(0.02, 0.52, 1.02), y = Inf,
-           label = c(">0", ">0.5", ">1"),
-           hjust = 0, vjust = 1.5, size = 3,
-           colour = c("grey40", "steelblue", "firebrick")) +
+  geom_vline(xintercept = 0,   linetype = "dashed", colour = "grey40",   linewidth = 0.5) +
+  geom_vline(xintercept = 0.5, linetype = "dashed", colour = "steelblue", linewidth = 0.5) +
+  geom_vline(xintercept = 1,   linetype = "dashed", colour = "firebrick", linewidth = 0.5) +
+  annotate("text", x = 0.02,  y = Inf, label = ">0",   hjust = 0, vjust = 1.5, size = 3, colour = "grey40") +
+  annotate("text", x = 0.52,  y = Inf, label = ">0.5", hjust = 0, vjust = 1.5, size = 3, colour = "steelblue") +
+  annotate("text", x = 1.02,  y = Inf, label = ">1",   hjust = 0, vjust = 1.5, size = 3, colour = "firebrick") +
   facet_wrap(~patient_id, scales = "free_y", ncol = 4) +
   scale_fill_manual(values = PALETTE_GROUP) +
   scale_x_continuous(limits = c(-2, 5)) +
