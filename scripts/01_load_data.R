@@ -51,10 +51,28 @@ find_raw_file <- function(roi_dir, required_proteins) {
   }
 
   if (length(candidates) == 0) return(NULL)
-  if (length(candidates) > 1)
-    message(sprintf("     [INFO] Trovati %d file candidati, uso il primo: %s",
-                    length(candidates), basename(candidates[1])))
-  return(candidates[1])
+
+  if (length(candidates) == 1) return(candidates[1])
+
+  # Multiple candidates: pick the first one whose protein columns are actually
+  # numeric. Some MACS iQ View exports contain '...' placeholder strings
+  # (e.g. '_WO Normalizzation.csv') that pass header checks but have no usable
+  # data. We validate by reading one data row and trying to coerce to numeric.
+  for (f in candidates) {
+    first_row  <- tryCatch(fread(f, nrows = 1, data.table = FALSE),
+                           error = function(e) NULL)
+    if (is.null(first_row)) next
+    if (!all(required_proteins %in% colnames(first_row))) next
+    test_vals  <- suppressWarnings(as.numeric(unlist(first_row[1, required_proteins])))
+    if (!all(is.na(test_vals))) {
+      message(sprintf("     [INFO] Trovati %d file candidati, uso: %s",
+                      length(candidates), basename(f)))
+      return(f)
+    }
+    message(sprintf("     [WARN] File scartato (dati non numerici): %s", basename(f)))
+  }
+
+  return(NULL)   # all candidates had non-numeric data
 }
 
 # --------------------------------------------------------------------------
