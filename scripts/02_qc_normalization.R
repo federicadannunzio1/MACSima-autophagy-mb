@@ -119,7 +119,7 @@ p_cofactor <- ggplot(quantile_df,
        colour = "Group", shape = "Patient") +
   theme_bw(base_size = 12)
 
-ggsave(file.path(OUT_PLOTS, "QC_00_cofactor_selection.pdf"),
+ggsave(file.path(OUT_PLOTS_QC, "QC_00_cofactor_selection.pdf"),
        p_cofactor, width = 10, height = 6)
 message("  Salvato: QC_00_cofactor_selection.pdf")
 
@@ -142,7 +142,7 @@ p_raw <- ggplot(df_long_raw,
   theme_bw(base_size = 10) +
   theme(strip.background = element_rect(fill = "grey90"))
 
-ggsave(file.path(OUT_PLOTS, "QC_01_raw_density_all_samples.pdf"),
+ggsave(file.path(OUT_PLOTS_QC, "QC_01_raw_density_all_samples.pdf"),
        p_raw, width = 14, height = 16)
 message("  Salvato: QC_01_raw_density_all_samples.pdf")
 
@@ -176,7 +176,7 @@ p_norm <- ggplot(df_long_norm,
        fill = "Patient", colour = "Patient") +
   theme_bw(base_size = 10)
 
-ggsave(file.path(OUT_PLOTS, "QC_02_arcsinh_density_all_samples.pdf"),
+ggsave(file.path(OUT_PLOTS_QC, "QC_02_arcsinh_density_all_samples.pdf"),
        p_norm, width = 14, height = 16)
 message("  Salvato: QC_02_arcsinh_density_all_samples.pdf")
 
@@ -191,7 +191,7 @@ p_ridge <- ggplot(df_long_norm,
   theme_ridges(font_size = 9) +
   theme(legend.position = "top")
 
-ggsave(file.path(OUT_PLOTS, "QC_03_arcsinh_ridgeplot.pdf"),
+ggsave(file.path(OUT_PLOTS_QC, "QC_03_arcsinh_ridgeplot.pdf"),
        p_ridge, width = 12, height = 12)
 message("  Salvato: QC_03_arcsinh_ridgeplot.pdf")
 

@@ -20,8 +20,19 @@ OUT_DATA  <- file.path(BASE_DIR, "output", "data")
 OUT_PLOTS <- file.path(BASE_DIR, "output", "plots")
 OUT_LOGS  <- file.path(BASE_DIR, "logs")
 
+# Sottocartelle per i plot (raggruppate per analisi)
+OUT_PLOTS_QC    <- file.path(OUT_PLOTS, "qc")          # 02: QC e cofactor
+OUT_PLOTS_INT   <- file.path(OUT_PLOTS, "integration") # 03: PCA, Harmony
+OUT_PLOTS_CLUST <- file.path(OUT_PLOTS, "clustering")  # 04: UMAP, clustree
+OUT_PLOTS_COMP  <- file.path(OUT_PLOTS, "comparison")  # 05: G3 vs SHH
+OUT_PLOTS_CORR  <- file.path(OUT_PLOTS, "correlations")# 06, mTOR, partial
+OUT_PLOTS_SKEW  <- file.path(OUT_PLOTS, "skewness")    # skewness_analysis
+OUT_PLOTS_FIG   <- file.path(OUT_PLOTS, "figures")     # 07, figure_panel
+
 # Crea output directories se non esistono
-for (d in c(OUT_DATA, OUT_PLOTS, OUT_LOGS)) {
+for (d in c(OUT_DATA, OUT_LOGS,
+            OUT_PLOTS, OUT_PLOTS_QC, OUT_PLOTS_INT, OUT_PLOTS_CLUST,
+            OUT_PLOTS_COMP, OUT_PLOTS_CORR, OUT_PLOTS_SKEW, OUT_PLOTS_FIG)) {
   if (!dir.exists(d)) dir.create(d, recursive = TRUE)
 }
 

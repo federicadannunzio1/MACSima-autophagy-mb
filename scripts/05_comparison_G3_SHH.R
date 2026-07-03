@@ -98,7 +98,7 @@ pheatmap(
   color = colorRampPalette(c("navy", "white", "firebrick3"))(100),
   fontsize = 11,
   main = sprintf("Patient arcsinh medians (Z-score per protein, cofactor = %d)", COFACTOR),
-  filename = file.path(OUT_PLOTS, "Comparison_01_heatmap_patient_medians.pdf"),
+  filename = file.path(OUT_PLOTS_COMP, "Comparison_01_heatmap_patient_medians.pdf"),
   width = 9, height = 7
 )
 message("  Salvato: Comparison_01_heatmap_patient_medians.pdf")
@@ -143,7 +143,7 @@ p_violin <- ggplot(df_violin_long,
   theme_bw(base_size = 11) +
   theme(legend.position = "bottom")
 
-ggsave(file.path(OUT_PLOTS, "Comparison_02_violin_G3_SHH.pdf"),
+ggsave(file.path(OUT_PLOTS_COMP, "Comparison_02_violin_G3_SHH.pdf"),
        p_violin, width = 12, height = 10)
 message("  Salvato: Comparison_02_violin_G3_SHH.pdf")
 
@@ -167,7 +167,7 @@ p_bar <- ggplot(patient_medians_df,
   theme_bw(base_size = 12) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave(file.path(OUT_PLOTS, "Comparison_03_barplot_patient_medians.pdf"),
+ggsave(file.path(OUT_PLOTS_COMP, "Comparison_03_barplot_patient_medians.pdf"),
        p_bar, width = 11, height = 6)
 message("  Salvato: Comparison_03_barplot_patient_medians.pdf")
 

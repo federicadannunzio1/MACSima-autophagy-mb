@@ -262,7 +262,7 @@ p1 <- ggplot(cells_sub, aes(x = pMTOR_arcsinh, y = LC3B_skewness, colour = group
   theme(strip.text = element_text(size = 7),
         legend.position = "bottom")
 
-ggsave(file.path(OUT_PLOTS, "mTOR_Skew_01_scatter_LC3B.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "mTOR_Skew_01_scatter_LC3B.pdf"),
        p1, width = 14, height = 8)
 message("Salvato: mTOR_Skew_01_scatter_LC3B.pdf")
 
@@ -292,7 +292,7 @@ p2 <- ggplot(cells_sub2, aes(x = pMTOR_arcsinh, y = P62_skewness, colour = group
   theme(strip.text = element_text(size = 7),
         legend.position = "bottom")
 
-ggsave(file.path(OUT_PLOTS, "mTOR_Skew_02_scatter_P62.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "mTOR_Skew_02_scatter_P62.pdf"),
        p2, width = 14, height = 8)
 message("Salvato: mTOR_Skew_02_scatter_P62.pdf")
 
@@ -327,7 +327,7 @@ p3 <- ggplot(cor_long, aes(x = rho, y = patient_id, fill = group, shape = group)
   theme_bw(base_size = 11) +
   theme(legend.position = "bottom")
 
-ggsave(file.path(OUT_PLOTS, "mTOR_Skew_03_rho_per_patient.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "mTOR_Skew_03_rho_per_patient.pdf"),
        p3, width = 10, height = 5)
 message("Salvato: mTOR_Skew_03_rho_per_patient.pdf")
 
@@ -349,9 +349,9 @@ p4 <- ggplot(cor_long, aes(x = group, y = rho, colour = group)) +
   theme_bw(base_size = 11) +
   theme(legend.position = "none")
 
-ggsave(file.path(OUT_PLOTS, "mTOR_Skew_04_rho_by_group.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "mTOR_Skew_04_rho_by_group.pdf"),
        p4, width = 8, height = 5)
 message("Salvato: mTOR_Skew_04_rho_by_group.pdf")
 
 message("\n=== mTOR SKEWNESS CORRELATION completata ===")
-message(sprintf("Plot in: %s", OUT_PLOTS))
+message(sprintf("Plot in: %s", OUT_PLOTS_CORR))

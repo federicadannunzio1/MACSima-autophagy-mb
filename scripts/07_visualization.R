@@ -90,13 +90,13 @@ p_patient <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, colour = patient_id)) +
   theme_classic(base_size = 12) +
   guides(colour = guide_legend(override.aes = list(size = 4, alpha = 1)))
 
-ggsave(file.path(OUT_PLOTS, "Final_01_UMAP_cluster_group.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Final_01_UMAP_cluster_group.pdf"),
        p_cluster + p_group, width = 14, height = 6)
-ggsave(file.path(OUT_PLOTS, "Final_01_UMAP_cluster_group.png"),
+ggsave(file.path(OUT_PLOTS_FIG, "Final_01_UMAP_cluster_group.png"),
        p_cluster + p_group, width = 14, height = 6, dpi = 300)
 message("  Salvato: Final_01_UMAP_cluster_group.pdf/png")
 
-ggsave(file.path(OUT_PLOTS, "Final_01b_UMAP_patient.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Final_01b_UMAP_patient.pdf"),
        p_cluster + p_patient, width = 14, height = 6)
 message("  Salvato: Final_01b_UMAP_patient.pdf")
 
@@ -110,7 +110,7 @@ p_split_list <- lapply(sort(unique(seurat_obj$group)), function(grp) {
     theme_bw(base_size = 10) +
     theme(legend.position = "none")
 })
-ggsave(file.path(OUT_PLOTS, "Final_02_UMAP_split_group.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Final_02_UMAP_split_group.pdf"),
        wrap_plots(p_split_list, nrow = 1),
        width = 6 * length(p_split_list), height = 5)
 message("  Salvato: Final_02_UMAP_split_group.pdf")
@@ -127,7 +127,7 @@ p_dot <- DotPlot(seurat_obj, features = SHORT_NAMES, group.by = "cluster",
   theme_bw(base_size = 11) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave(file.path(OUT_PLOTS, "Final_03_dotplot_clusters.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Final_03_dotplot_clusters.pdf"),
        p_dot, width = 9, height = max(5, n_clusters * 0.6 + 2))
 message("  Salvato: Final_03_dotplot_clusters.pdf")
 
@@ -162,7 +162,7 @@ pheatmap(mat_sample,
   color = colorRampPalette(c("navy", "white", "firebrick3"))(100),
   scale = "row", fontsize_row = 10,
   main = paste0("Single-cell heatmap (", n_per_cluster, " cells per cluster, Z-score per protein)"),
-  filename = file.path(OUT_PLOTS, "Final_04_heatmap_singlecell.pdf"),
+  filename = file.path(OUT_PLOTS_FIG, "Final_04_heatmap_singlecell.pdf"),
   width = 12, height = 5
 )
 message("  Salvato: Final_04_heatmap_singlecell.pdf")
@@ -333,7 +333,7 @@ p_stack_pct <- ggplot(comp_table,
   theme(legend.position = "right",
         panel.grid.major.x = element_blank())
 
-ggsave(file.path(OUT_PLOTS, "Final_05_stacked_barplot_cluster_composition.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Final_05_stacked_barplot_cluster_composition.pdf"),
        p_stack_abs / p_stack_pct,
        width = max(10, n_clusters * 0.9 + 3), height = 14)
 message("  Salvato: Final_05_stacked_barplot_cluster_composition.pdf")

@@ -157,9 +157,9 @@ for (i in seq_len(nrow(PAIRS))) {
 p_pvr    <- plot_list[["LC3B_PVR"]] / plot_list[["P62_PVR"]] / plot_list[["pMTOR_PVR"]]
 p_nectin <- plot_list[["LC3B_Nectin2"]] / plot_list[["P62_Nectin2"]] / plot_list[["pMTOR_Nectin2"]]
 
-ggsave(file.path(OUT_PLOTS, "Correlations_01_autophagy_vs_PVR.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "Correlations_01_autophagy_vs_PVR.pdf"),
        p_pvr, width = 10, height = 14)
-ggsave(file.path(OUT_PLOTS, "Correlations_02_autophagy_vs_Nectin2.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "Correlations_02_autophagy_vs_Nectin2.pdf"),
        p_nectin, width = 10, height = 14)
 message("  Salvato: Correlations_01_autophagy_vs_PVR.pdf")
 message("  Salvato: Correlations_02_autophagy_vs_Nectin2.pdf")
@@ -185,7 +185,7 @@ p_rho <- ggplot(corr_mean,
        x = "DNAM-1 ligand", y = "Autophagy marker") +
   theme_bw(base_size = 12)
 
-ggsave(file.path(OUT_PLOTS, "Correlations_03_rho_heatmap_by_group.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "Correlations_03_rho_heatmap_by_group.pdf"),
        p_rho, width = 8, height = 5)
 message("  Salvato: Correlations_03_rho_heatmap_by_group.pdf")
 
@@ -208,7 +208,7 @@ p_rho_pat <- ggplot(corr_df,
   theme_bw(base_size = 10) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 
-ggsave(file.path(OUT_PLOTS, "Correlations_04_rho_per_patient.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "Correlations_04_rho_per_patient.pdf"),
        p_rho_pat, width = 10, height = max(5, length(unique(seurat_obj$patient_id)) * 0.8 + 2))
 message("  Salvato: Correlations_04_rho_per_patient.pdf")
 

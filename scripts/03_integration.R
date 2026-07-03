@@ -94,7 +94,7 @@ p_pre_grp <- ggplot(pca_df, aes(x = PC1, y = PC2, colour = group)) +
   guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
   theme_bw()
 
-ggsave(file.path(OUT_PLOTS, "Integration_01_PCA_pre_harmony.pdf"),
+ggsave(file.path(OUT_PLOTS_INT, "Integration_01_PCA_pre_harmony.pdf"),
        p_pre_pat + p_pre_grp, width = 14, height = 6)
 message("  Salvato: Integration_01_PCA_pre_harmony.pdf")
 
@@ -144,7 +144,7 @@ p_post_grp <- ggplot(harm_df, aes(x = H1, y = H2, colour = group)) +
   guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1))) +
   theme_bw()
 
-ggsave(file.path(OUT_PLOTS, "Integration_02_Harmony_post.pdf"),
+ggsave(file.path(OUT_PLOTS_INT, "Integration_02_Harmony_post.pdf"),
        p_post_pat + p_post_grp, width = 14, height = 6)
 message("  Salvato: Integration_02_Harmony_post.pdf")
 
@@ -152,7 +152,7 @@ p_comparison <- (p_pre_pat + p_pre_grp) / (p_post_pat + p_post_grp) +
   plot_annotation(title = "Batch correction: PCA vs Harmony",
                   subtitle = "Top: pre-Harmony | Bottom: post-Harmony")
 
-ggsave(file.path(OUT_PLOTS, "Integration_03_comparison_pre_post.pdf"),
+ggsave(file.path(OUT_PLOTS_INT, "Integration_03_comparison_pre_post.pdf"),
        p_comparison, width = 14, height = 12)
 message("  Salvato: Integration_03_comparison_pre_post.pdf")
 

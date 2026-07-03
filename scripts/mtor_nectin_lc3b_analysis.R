@@ -227,7 +227,7 @@ p1 <- ggplot(plot_df, aes(x = rho, y = patient_id,
         strip.background = element_rect(fill = "grey90"),
         strip.text       = element_text(size = 9))
 
-ggsave(file.path(OUT_PLOTS, "PartialCor_01_simple_vs_partial.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "PartialCor_01_simple_vs_partial.pdf"),
        p1, width = 12, height = 10)
 message("  Salvato: PartialCor_01_simple_vs_partial.pdf")
 
@@ -261,10 +261,10 @@ p2 <- ggplot(delta_df, aes(x = delta_rho, y = label_partial, colour = group)) +
   theme(legend.position  = "none",
         strip.background = element_rect(fill = "grey90"))
 
-ggsave(file.path(OUT_PLOTS, "PartialCor_02_delta_rho.pdf"),
+ggsave(file.path(OUT_PLOTS_CORR, "PartialCor_02_delta_rho.pdf"),
        p2, width = 10, height = 6)
 message("  Salvato: PartialCor_02_delta_rho.pdf")
 
 message("\n=== ANALISI CORRELAZIONE A TRE completata ===")
 message(sprintf("Output in: %s", OUT_DATA))
-message(sprintf("Plot in: %s", OUT_PLOTS))
+message(sprintf("Plot in: %s", OUT_PLOTS_CORR))

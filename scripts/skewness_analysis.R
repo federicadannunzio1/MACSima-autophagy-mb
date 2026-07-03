@@ -187,7 +187,7 @@ p_ridge <- ggplot(df_long,
   theme(legend.position = "top",
         strip.background = element_rect(fill = "grey90"))
 
-ggsave(file.path(OUT_PLOTS, "Skewness_01_ridge_per_paziente.pdf"),
+ggsave(file.path(OUT_PLOTS_SKEW, "Skewness_01_ridge_per_paziente.pdf"),
        p_ridge, width = 14, height = 8)
 message("Salvato: Skewness_01_ridge_per_paziente.pdf")
 
@@ -221,7 +221,7 @@ p_violin <- ggplot(df_long_sub, aes(x = group, y = skewness, fill = group)) +
   theme(legend.position = "none",
         strip.background = element_rect(fill = "grey90"))
 
-ggsave(file.path(OUT_PLOTS, "Skewness_02_violin_G3vsSHH.pdf"),
+ggsave(file.path(OUT_PLOTS_SKEW, "Skewness_02_violin_G3vsSHH.pdf"),
        p_violin, width = 10, height = 6)
 message("Salvato: Skewness_02_violin_G3vsSHH.pdf")
 
@@ -255,7 +255,7 @@ p_scatter <- ggplot(df_sc, aes(x = LC3B_skewness, y = P62_skewness,
   theme_bw(base_size = 12) +
   guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1)))
 
-ggsave(file.path(OUT_PLOTS, "Skewness_03_scatter_LC3B_vs_P62.pdf"),
+ggsave(file.path(OUT_PLOTS_SKEW, "Skewness_03_scatter_LC3B_vs_P62.pdf"),
        p_scatter, width = 8, height = 7)
 message("Salvato: Skewness_03_scatter_LC3B_vs_P62.pdf")
 
@@ -303,7 +303,7 @@ p_medians <- ggplot(df_med_long,
   theme_bw(base_size = 12) +
   theme(strip.background = element_rect(fill = "grey90"))
 
-ggsave(file.path(OUT_PLOTS, "Skewness_04_patient_medians.pdf"),
+ggsave(file.path(OUT_PLOTS_SKEW, "Skewness_04_patient_medians.pdf"),
        p_medians, width = 10, height = 6)
 message("Salvato: Skewness_04_patient_medians.pdf")
 
@@ -346,7 +346,7 @@ p_dens <- ggplot(df_dens, aes(x = LC3B_skewness, fill = group)) +
   theme(legend.position = "top",
         strip.background = element_rect(fill = "grey90"))
 
-ggsave(file.path(OUT_PLOTS, "Skewness_05_LC3B_distribution_per_patient.pdf"),
+ggsave(file.path(OUT_PLOTS_SKEW, "Skewness_05_LC3B_distribution_per_patient.pdf"),
        p_dens, width = 14, height = 10)
 message("Salvato: Skewness_05_LC3B_distribution_per_patient.pdf")
 
@@ -454,7 +454,7 @@ p_punctate <- ggplot(punctate_df,
         strip.background   = element_rect(fill = "grey90"),
         strip.text         = element_text(face = "bold"))
 
-ggsave(file.path(OUT_PLOTS, "Skewness_06_punctate_proportion_thresholds.pdf"),
+ggsave(file.path(OUT_PLOTS_SKEW, "Skewness_06_punctate_proportion_thresholds.pdf"),
        p_punctate, width = 14, height = 6)
 message("Salvato: Skewness_06_punctate_proportion_thresholds.pdf")
 
@@ -474,4 +474,4 @@ write.csv(patient_medians, file.path(OUT_DATA, "skewness_patient_medians.csv"),
 message("Aggiornato: skewness_patient_medians.csv")
 
 message("\n=== SKEWNESS ANALYSIS completata ===")
-message(sprintf("Plot in: %s", OUT_PLOTS))
+message(sprintf("Plot in: %s", OUT_PLOTS_SKEW))

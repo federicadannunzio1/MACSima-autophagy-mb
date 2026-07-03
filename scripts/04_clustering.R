@@ -100,7 +100,7 @@ if (length(CLUSTERING_RESOLUTIONS) > 1) {
     labs(title = "Clustree: cluster stability across resolutions",
          subtitle = "Select the resolution where clusters stabilize") +
     theme(legend.position = "bottom")
-  ggsave(file.path(OUT_PLOTS, "Clustering_01_clustree.pdf"),
+  ggsave(file.path(OUT_PLOTS_CLUST, "Clustering_01_clustree.pdf"),
          p_clustree, width = 10, height = 12)
   message("  Salvato: Clustering_01_clustree.pdf")
   message(sprintf("  >> Ispeziona il clustree e verifica che FINAL_RESOLUTION=%.1f sia appropriata",
@@ -192,7 +192,7 @@ p_umap_patient <- ggplot(umap_df, aes(x = UMAP1, y = UMAP2, colour = patient_id)
   theme_bw() +
   guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1)))
 
-ggsave(file.path(OUT_PLOTS, "Clustering_02_UMAP.pdf"),
+ggsave(file.path(OUT_PLOTS_CLUST, "Clustering_02_UMAP.pdf"),
        p_umap_cluster + p_umap_group + p_umap_patient,
        width = 21, height = 7)
 message("  Salvato: Clustering_02_UMAP.pdf")
@@ -211,7 +211,7 @@ p_features <- FeaturePlot(
 ) & theme_bw(base_size = 9) &
   theme(axis.text = element_blank(), axis.ticks = element_blank())
 
-ggsave(file.path(OUT_PLOTS, "Clustering_03_UMAP_features.pdf"),
+ggsave(file.path(OUT_PLOTS_CLUST, "Clustering_03_UMAP_features.pdf"),
        p_features, width = 12, height = 8)
 message("  Salvato: Clustering_03_UMAP_features.pdf")
 
@@ -236,7 +236,7 @@ pheatmap(
   color = colorRampPalette(c("navy", "white", "firebrick3"))(100),
   fontsize = 10,
   main = "Median protein profiles per cluster (Z-score per protein)",
-  filename = file.path(OUT_PLOTS, "Clustering_04_heatmap_cluster_profiles.pdf"),
+  filename = file.path(OUT_PLOTS_CLUST, "Clustering_04_heatmap_cluster_profiles.pdf"),
   width = 8, height = 5
 )
 message("  Salvato: Clustering_04_heatmap_cluster_profiles.pdf")

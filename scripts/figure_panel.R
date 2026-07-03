@@ -95,7 +95,7 @@ p_A <- ggplot(corr_df,
     plot.title       = element_text(face = "bold", size = 12)
   )
 
-ggsave(file.path(OUT_PLOTS, "Figure_Panel_A_correlations.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Figure_Panel_A_correlations.pdf"),
        p_A, width = 10, height = 7)
 message("  Salvato: Figure_Panel_A_correlations.pdf")
 
@@ -143,7 +143,7 @@ p_B <- ggplot(df_dens, aes(x = LC3B_skewness, fill = group)) +
     plot.title         = element_text(face = "bold", size = 12)
   )
 
-ggsave(file.path(OUT_PLOTS, "Figure_Panel_B_skewness.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Figure_Panel_B_skewness.pdf"),
        p_B, width = 14, height = 8)
 message("  Salvato: Figure_Panel_B_skewness.pdf")
 
@@ -159,9 +159,9 @@ p_combined <- p_A / p_B +
                   tag_prefix = "",
                   theme = theme(plot.tag = element_text(face = "bold", size = 14)))
 
-ggsave(file.path(OUT_PLOTS, "Figure_Panel_combined.pdf"),
+ggsave(file.path(OUT_PLOTS_FIG, "Figure_Panel_combined.pdf"),
        p_combined, width = 14, height = 16)
 message("  Salvato: Figure_Panel_combined.pdf")
 
 message("\n=== FIGURE PANEL completato ===")
-message(sprintf("Output in: %s", OUT_PLOTS))
+message(sprintf("Output in: %s", OUT_PLOTS_FIG))
