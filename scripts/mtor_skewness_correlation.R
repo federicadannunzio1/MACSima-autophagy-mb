@@ -127,8 +127,8 @@ for (pat_dir in sort(patient_dirs)) {
     }
     dt <- dt[, REQUIRED_COLS, drop = FALSE]
 
-    # Converti a numerico e rimuovi NA
-    dt <- as.data.frame(lapply(dt, as.numeric))
+    # Converti a numerico e rimuovi NA (check.names=FALSE preserva nomi con spazi)
+    dt <- as.data.frame(lapply(dt, as.numeric), check.names = FALSE)
     na_mask <- rowSums(is.na(dt)) > 0
     if (any(na_mask)) {
       message(sprintf("  [WARN] %s: %d righe con NA rimosse", roi_name, sum(na_mask)))
