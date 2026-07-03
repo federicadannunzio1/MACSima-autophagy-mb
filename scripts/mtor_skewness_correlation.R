@@ -242,7 +242,7 @@ message("\nGenerazione plot...")
 set.seed(SEED)
 cells_sub <- cells %>%
   group_by(patient_id) %>%
-  slice_sample(n = min(5000, n())) %>%
+  slice_sample(n = 5000) %>%
   ungroup() %>%
   left_join(cor_df[, c("patient_id", "rho_pMTOR_LC3Bskew")], by = "patient_id") %>%
   mutate(label = sprintf("%s\nrho=%.3f", patient_id, rho_pMTOR_LC3Bskew),
@@ -272,7 +272,7 @@ message("Salvato: mTOR_Skew_01_scatter_LC3B.pdf")
 
 cells_sub2 <- cells %>%
   group_by(patient_id) %>%
-  slice_sample(n = min(5000, n())) %>%
+  slice_sample(n = 5000) %>%
   ungroup() %>%
   left_join(cor_df[, c("patient_id", "rho_pMTOR_P62skew")], by = "patient_id") %>%
   mutate(label = sprintf("%s\nrho=%.3f", patient_id, rho_pMTOR_P62skew),
