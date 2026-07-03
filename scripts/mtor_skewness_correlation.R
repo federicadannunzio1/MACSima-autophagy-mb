@@ -109,13 +109,23 @@ for (pat_dir in sort(patient_dirs)) {
     }
 
     dt <- tryCatch(
-      fread(skew_file, select = REQUIRED_COLS, data.table = FALSE),
+      fread(skew_file, data.table = FALSE),
       error = function(e) {
         message(sprintf("  [ERROR] %s: %s", roi_name, e$message))
         NULL
       }
     )
     if (is.null(dt)) next
+
+    # Verifica colonne richieste (dopo lettura completa, evita problemi di encoding con select=)
+    missing_cols <- setdiff(REQUIRED_COLS, colnames(dt))
+    if (length(missing_cols) > 0) {
+      message(sprintf("  [SKIP] %s: colonne mancanti: %s", roi_name,
+                      paste(missing_cols, collapse = ", ")))
+      skipped_rois <- c(skipped_rois, paste0(pid, "_", roi_name))
+      next
+    }
+    dt <- dt[, REQUIRED_COLS, drop = FALSE]
 
     # Converti a numerico e rimuovi NA
     dt <- as.data.frame(lapply(dt, as.numeric))
