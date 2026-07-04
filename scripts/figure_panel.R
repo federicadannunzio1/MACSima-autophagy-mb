@@ -54,16 +54,26 @@ corr_df <- corr_df %>%
     ))
   )
 
-# Scala colori: usa range reale dei dati (~-0.16, 0.73)
-# 7 punti di colore su scala rescalata per massimizzare contrasto
-rho_min <- -0.25
-rho_max <-  0.80
-rho_mid <-  0.0   # bianco = rho 0
+# Scala colori: range teorico Spearman -1 a +1, bianco ESATTAMENTE a rho=0.
+# I breakpoints sono compressi nel range negativo (pochi valori) e
+# allargati nel range positivo (0-0.65) dove si concentrano i dati,
+# cosi anche correlazioni moderate (es. 0.1-0.3) appaiono chiaramente rosse.
+rho_min <- -1.0
+rho_max <-  1.0
 
-# Posizioni normalizzate 0-1 dei breakpoints nel range (rho_min, rho_max)
-vals_norm <- rescale(c(rho_min, -0.1, 0, 0.15, 0.35, 0.55, rho_max),
-                     from = c(rho_min, rho_max))
-cols_7    <- c("#1A5276", "#2E86C1", "#AED6F1", "white", "#F1948A", "#C0392B", "#7B241C")
+# Breakpoints in spazio rho: -1, -0.3, 0, 0.20, 0.40, 0.65, 1
+# Posizioni normalizzate in [0,1]: (rho - rho_min) / (rho_max - rho_min)
+break_rho <- c(-1.0, -0.3, 0.0, 0.20, 0.40, 0.65, 1.0)
+vals_norm <- (break_rho - rho_min) / (rho_max - rho_min)
+# = c(0.0, 0.35, 0.50, 0.60, 0.70, 0.825, 1.0)
+
+cols_7 <- c("#1A5276",  # blu scuro  (rho = -1.0)
+            "#5DADE2",  # blu medio  (rho = -0.3)
+            "white",    # bianco     (rho =  0.0)  <-- ZERO ESATTO
+            "#FADBD8",  # rosa tenue (rho =  0.2)
+            "#E74C3C",  # rosso med  (rho =  0.4)
+            "#922B21",  # rosso scuro(rho =  0.65)
+            "#641E16")  # bordeaux   (rho =  1.0)
 
 p_A <- ggplot(corr_df,
               aes(x = pair, y = patient_label, fill = rho)) +
@@ -73,7 +83,7 @@ p_A <- ggplot(corr_df,
     colours = cols_7,
     values  = vals_norm,
     limits  = c(rho_min, rho_max),
-    oob     = squish,
+    oob     = squish,   # valori fuori range (nessuno atteso) vengono compressi
     name    = "Spearman rho",
     guide   = guide_colourbar(barwidth = 8, barheight = 0.8,
                                title.position = "top", title.hjust = 0.5)
@@ -109,6 +119,10 @@ message("Pannello B: distribuzione skewness...")
 df_all <- fread(file.path(OUT_DATA, "skewness_cells.csv"), data.table = FALSE)
 df_all$group <- factor(df_all$group, levels = c("G3", "SHH"))
 
+# Palette locale per pannello B: arancione (G3) e teal (SHH)
+# Diversa da PALETTE_GROUP (rosso/blu) per non confondere con i colori dell'heatmap
+PALETTE_SKEW <- c(G3 = "#E67E22", SHH = "#16A085")
+
 # Ordine pazienti: G3 per primi
 pat_order_sk <- c(g3_pats, shh_pats)
 df_all$patient_id <- factor(df_all$patient_id, levels = pat_order_sk)
@@ -127,7 +141,7 @@ p_B <- ggplot(df_dens, aes(x = LC3B_skewness, fill = group)) +
   geom_vline(xintercept = 1,   linetype = "dashed",
              colour = "firebrick", linewidth = 0.5) +
   facet_wrap(~ patient_id, scales = "free_y", ncol = 4) +
-  scale_fill_manual(values = PALETTE_GROUP) +
+  scale_fill_manual(values = PALETTE_SKEW) +
   scale_x_continuous(limits = c(-2, 5), breaks = c(-1, 0, 1, 2, 3)) +
   labs(
     title = "LC3B cytoplasm skewness distribution per patient",
