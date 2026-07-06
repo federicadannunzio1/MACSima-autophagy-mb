@@ -140,7 +140,7 @@ p_B <- ggplot(df_dens, aes(x = LC3B_skewness, fill = group)) +
              colour = "steelblue", linewidth = 0.5) +
   geom_vline(xintercept = 1,   linetype = "dashed",
              colour = "firebrick", linewidth = 0.5) +
-  facet_wrap(~ patient_id, scales = "free_y", ncol = 4) +
+  facet_wrap(~ patient_id, scales = "fixed", ncol = 4) +
   scale_fill_manual(values = PALETTE_SKEW) +
   scale_x_continuous(limits = c(-2, 5), breaks = c(-1, 0, 1, 2, 3)) +
   labs(
