@@ -5,7 +5,7 @@ data/
 output/
 logs/
 
-# Manuscript (managed separately)
+# Manuscript files (managed separately — not part of the code repo)
 manuscript/
 
 # Report documents (local only)
