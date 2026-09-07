@@ -59,7 +59,7 @@ This pipeline analyses MACSima multiplexed cyclic immunofluorescence data from h
 ## Requirements
 
 - **R >= 4.3**
-- All package dependencies installed via `setup_packages.R` (see below)
+- All package dependencies installed via `scripts/00_setup_packages.R` (see below)
 - Raw MACS iQ View CSV exports in the `data/` directory (see *Data* section)
 
 Main packages: `Seurat`, `harmony`, `data.table`, `ggplot2`, `dplyr`, `tidyr`, `patchwork`, `ggridges`, `clustree`.
@@ -184,6 +184,14 @@ sbatch slurm/run_mtor_nectin_lc3b.sh     # runs 11
 
 Scripts 12 and 13 do not have dedicated SLURM scripts; they can be run locally or with a simple `srun`/`sbatch` one-liner.
 
+### Step 6 — Assemble the manuscript figure panel
+
+```bash
+Rscript scripts/14_figure_panel.R
+```
+
+Requires outputs from `06_correlations.R` and `08_skewness_analysis.R`. Produces `output/plots/figures/Figure_Panel_combined.pdf` and the individual panels A and B.
+
 ---
 
 ## Script dependency chain
@@ -210,8 +218,12 @@ raw data (data/)
     │
     ├── 12_lc3b_mfi_vs_skewness.R  ◄── raw data
     │
-    └── 13_ki67_sensitivity_analysis.R  ◄── 07_integrated_matrix_arcsinh.tsv
-                                             06_spearman_correlations.csv
+    ├── 13_ki67_sensitivity_analysis.R  ◄── 07_integrated_matrix_arcsinh.tsv
+    │                                        06_spearman_correlations.csv
+    │
+    └── 14_figure_panel.R  ◄── 06_spearman_correlations.csv
+                                skewness_cells.csv (from 08)
+                                ► Figure_Panel_combined.pdf
 ```
 
 ---
