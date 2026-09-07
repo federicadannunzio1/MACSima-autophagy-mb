@@ -2,7 +2,7 @@
 
 Single-cell spatial proteomics analysis supporting:
 
-> Giansanti et al., *Autophagy inhibition restores DNAM-1-mediated NK cell immunity in Group 3 medulloblastoma* (under revision, 2026)
+> Giansanti et al., *Autophagy inhibition restores DNAM-1-mediated NK cell immunity and reprograms tumor microenvironment in Group 3 medulloblastoma* (under revision, 2026)
 
 ---
 
