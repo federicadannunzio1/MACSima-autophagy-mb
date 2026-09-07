@@ -45,7 +45,7 @@ This pipeline analyses MACSima multiplexed cyclic immunofluorescence data from h
 │   ├── 12_lc3b_mfi_vs_skewness.R   # MFI vs skewness scatter (4M cells)
 │   ├── 13_ki67_sensitivity_analysis.R  # re-run correlations excluding Ki67-high cells
 │   │
-│   └── figure_panel.R         # composite figure assembly for the manuscript
+│   └── 14_figure_panel.R      # composite figure assembly for the manuscript
 │
 └── slurm/                     # SLURM job scripts for HPC — submit from project root
     ├── run_pipeline.sh             # full pipeline (steps 01-07)
