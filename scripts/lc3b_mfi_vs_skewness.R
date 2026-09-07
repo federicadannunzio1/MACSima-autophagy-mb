@@ -238,30 +238,28 @@ p1 <- ggplot(df_plot,
   scale_y_continuous(limits = c(-3, 5)) +
   scale_x_continuous(limits = c(0, NA)) +
 
-  # Annotazioni quadranti
+  # Quadrant annotations
   annotate("text", x = -Inf, y = 5,   hjust = -0.1, vjust = 1,
-           label = "SPARSO PUNTATO\n(pochi spot brillanti)", size = 2.8,
+           label = "SPARSE PUNCTATE\n(few bright spots)", size = 2.8,
            colour = "grey30", fontface = "italic") +
   annotate("text", x = mfi_median * 1.05, y = 5, hjust = 0, vjust = 1,
-           label = "DENSO PUNTATO\n(molti spot → bassa skew)", size = 2.8,
+           label = "DENSE PUNCTATE\n(many spots -> lower skewness)", size = 2.8,
            colour = "grey30", fontface = "italic") +
   annotate("text", x = mfi_median * 1.05, y = -2.8, hjust = 0, vjust = 0,
-           label = "UNIFORME BRILLANTE\n(alta MFI, non puntato?)", size = 2.8,
+           label = "UNIFORMLY BRIGHT\n(high MFI, not punctate)", size = 2.8,
            colour = "grey30", fontface = "italic") +
   annotate("text", x = -Inf, y = -2.8, hjust = -0.1, vjust = 0,
-           label = "DIFFUSO / BACKGROUND\n(bassa MFI, bassa skew)", size = 2.8,
+           label = "DIFFUSE / BACKGROUND\n(low MFI, low skewness)", size = 2.8,
            colour = "grey30", fontface = "italic") +
 
   labs(
-    title    = "LC3B: Mean Intensity (MFI arcsinh) vs Cytoplasmic Skewness — per cellula",
+    title    = "LC3B: Mean Fluorescence Intensity (arcsinh) vs Cytoplasmic Skewness",
     subtitle = sprintf(
-      "Linea verticale = mediana MFI arcsinh (%.2f) | Linea orizzontale = skewness 0\n"  ,
+      "Vertical line = overall MFI median (%.2f) | Horizontal line = skewness 0 | 5,000-cell subsample per patient",
       mfi_median),
     x        = sprintf("LC3B MFI [arcsinh(MFI / %d)]", COFACTOR),
     y        = "LC3B Cytoplasm Intensity Skewness",
-    colour   = "Group",
-    caption  = sprintf("Subsample: %s celle/paziente (max 5,000) | G3 rosso, SHH blu",
-                       format(nrow(df_plot), big.mark = ","))
+    colour   = "Group"
   ) +
   theme_bw(base_size = 11) +
   guides(colour = guide_legend(override.aes = list(size = 3, alpha = 1)))
@@ -286,8 +284,8 @@ p2 <- ggplot(df_plot,
   scale_colour_manual(values = PALETTE_GROUP) +
   scale_y_continuous(limits = c(-3, 5)) +
   labs(
-    title    = "LC3B MFI vs Skewness — per paziente",
-    subtitle = "Riga nera = regressione lineare per paziente | Linee tratteggiate = mediana MFI e skewness 0",
+    title    = "LC3B MFI vs Skewness - per patient",
+    subtitle = "Black line = linear regression per patient | Dashed lines = overall MFI median and skewness 0",
     x        = sprintf("LC3B MFI [arcsinh / %d]", COFACTOR),
     y        = "LC3B Skewness",
     colour   = "Group"
@@ -311,7 +309,7 @@ p3_g3  <- ggplot(df_plot[df_plot$group == "G3", ],
   geom_vline(xintercept = mfi_median, linetype = "dashed", colour = "white", linewidth = 0.5) +
   scale_fill_viridis_c(option = "inferno", name = "Cell count") +
   scale_y_continuous(limits = c(-3, 5)) +
-  labs(title = "G3 — LC3B MFI vs Skewness (density)",
+  labs(title = "G3 - LC3B MFI vs Skewness (cell density)",
        x = "LC3B MFI arcsinh", y = "LC3B Skewness") +
   theme_bw(base_size = 11)
 
@@ -322,7 +320,7 @@ p3_shh <- ggplot(df_plot[df_plot$group == "SHH", ],
   geom_vline(xintercept = mfi_median, linetype = "dashed", colour = "white", linewidth = 0.5) +
   scale_fill_viridis_c(option = "viridis", name = "Cell count") +
   scale_y_continuous(limits = c(-3, 5)) +
-  labs(title = "SHH — LC3B MFI vs Skewness (density)",
+  labs(title = "SHH - LC3B MFI vs Skewness (cell density)",
        x = "LC3B MFI arcsinh", y = "LC3B Skewness") +
   theme_bw(base_size = 11)
 
@@ -359,23 +357,23 @@ p4 <- ggplot(pat_summary,
 
   # Quadrant labels
   annotate("text", x = -Inf, y = Inf, hjust = -0.05, vjust = 1.3,
-           label = "Sparso puntato\n(bassa MFI, alta skew)", size = 3,
+           label = "Sparse punctate\n(low MFI, high skewness)", size = 3,
            colour = "grey40", fontface = "italic") +
   annotate("text", x = Inf,  y = Inf, hjust = 1.05, vjust = 1.3,
-           label = "Denso puntato\n(alta MFI, skew mod.)", size = 3,
+           label = "Dense punctate\n(high MFI, moderate skewness)", size = 3,
            colour = "grey40", fontface = "italic") +
   annotate("text", x = -Inf, y = -Inf, hjust = -0.05, vjust = -0.3,
-           label = "Diffuso\n(bassa MFI, bassa skew)", size = 3,
+           label = "Diffuse\n(low MFI, low skewness)", size = 3,
            colour = "grey40", fontface = "italic") +
   annotate("text", x = Inf, y = -Inf, hjust = 1.05, vjust = -0.3,
-           label = "Uniforme brillante\n(alta MFI, neg. skew)", size = 3,
+           label = "Uniformly bright\n(high MFI, negative skewness)", size = 3,
            colour = "grey40", fontface = "italic") +
 
   labs(
-    title    = "Mediane per paziente: LC3B MFI vs LC3B Skewness",
-    subtitle = "Ogni punto = un paziente | Quadranti = interpretazione biologica",
-    x        = sprintf("Mediana LC3B MFI [arcsinh / %d]", COFACTOR),
-    y        = "Mediana LC3B Cytoplasmic Skewness",
+    title    = "Patient medians: LC3B MFI vs LC3B Skewness",
+    subtitle = "Each point = one patient | Quadrants = biological interpretation",
+    x        = sprintf("Median LC3B MFI [arcsinh / %d]", COFACTOR),
+    y        = "Median LC3B Cytoplasmic Skewness",
     colour   = "Group"
   ) +
   theme_bw(base_size = 12)
