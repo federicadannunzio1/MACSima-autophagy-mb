@@ -23,10 +23,10 @@ This pipeline analyses MACSima multiplexed cyclic immunofluorescence data from h
 ```
 .
 ├── README.md
-├── setup_packages.R       # install all R dependencies
 ├── scripts/
-│   ├── config.R           # paths, sample list, parameters — edit this first
-│   ├── run_pipeline.R     # master runner for the core pipeline (steps 01-07)
+│   ├── config.R                # paths, sample list, parameters — edit this first
+│   ├── run_pipeline.R          # master runner for the core pipeline (steps 01-07)
+│   ├── 00_setup_packages.R     # install all R dependencies — run once before anything else
 │   │
 │   │   ── Core pipeline (run in order via run_pipeline.R) ──────────────
 │   ├── 01_load_data.R          # load and validate raw MACS iQ View CSV exports
@@ -78,7 +78,7 @@ cd MACSima-autophagy-mb
 ### Step 1 — Install R dependencies
 
 ```r
-Rscript setup_packages.R
+Rscript scripts/00_setup_packages.R
 ```
 
 This checks which packages are installed and installs any that are missing from CRAN and Bioconductor. Run once before the first execution.
