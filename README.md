@@ -257,8 +257,3 @@ To request early access to the data, contact the corresponding author.
 
 If you use this code, please cite the associated paper (citation will be updated upon acceptance).
 
----
-
-## Authors
-
-Federica D'Annunzio · Ignazio Caruana · Giansanti Lab, Sapienza University of Rome
